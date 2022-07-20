@@ -1,9 +1,13 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentVlidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using DatAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using FluentValidation;
 
 namespace Business.Concrete
 {
@@ -16,20 +20,21 @@ namespace Business.Concrete
             _productDal = productDal;
         }
 
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-            //BUSİNESS CODES    
-            if (product.ProductName.Length < 2)
-            {
-                return new ErrorResult(Messages.ProductNameInValid);
-            }
+
             _productDal.Add(product);
+           
             return new SuccessResult(Messages.ProductAdded);
         }
 
+
+
+
         public IDataResult<List<Product>> getAll()
         {
-            if (DateTime.Now.Hour == 22)
+            if (DateTime.Now.Hour == 15)
             {
                 return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
