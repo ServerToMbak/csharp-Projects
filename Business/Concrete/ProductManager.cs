@@ -34,7 +34,7 @@ namespace Business.Concrete
 
         public IDataResult<List<Product>> getAll()
         {
-            if (DateTime.Now.Hour == 15)
+            if (DateTime.Now.Hour == 18)
             {
                 return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
