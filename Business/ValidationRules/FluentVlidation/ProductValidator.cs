@@ -10,7 +10,6 @@ namespace Business.ValidationRules.FluentVlidation
 {
     public class ProductValidator:AbstractValidator<Product>
     {
-        [Obsolete]
         public ProductValidator()
         {
             RuleFor(p => p.ProductName).NotEmpty();
