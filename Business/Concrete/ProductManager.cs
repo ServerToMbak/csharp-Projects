@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentVlidation;
 using Core.Aspects.Autofac.Validation;
@@ -22,11 +23,12 @@ namespace Business.Concrete
             _categoryService = categoryService; 
         }
 
-        [ValidationAspect(typeof(ProductValidator))]
+       [SecuredOperation("product.add,admin")]
+       // [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
              
-           IResult result= BusinessRules.Run(CheckIfProductNameExists(product.ProductName),
+           IResult result= BusinessRules.Run(
                            CheckIfProductCountOfCategoryCorrect(product.CategoryID), 
                            CheckIfCategoryLimitExceded());
 
@@ -76,9 +78,10 @@ namespace Business.Concrete
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Update(Product product)
         {
+            IResult result = BusinessRules.Run(CheckIfCategoryLimitExceded());
            
             _productDal.Update(product);
-
+                        
             throw new NotImplementedException();
         }
         

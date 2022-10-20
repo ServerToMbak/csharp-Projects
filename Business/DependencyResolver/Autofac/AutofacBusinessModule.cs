@@ -4,14 +4,16 @@ using Business.Abstract;
 using Business.Concrete;
 using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
+using Core.Utilities.Security.JWT;
 using DatAccess.Abstract;
 using DatAccess.Concrete.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Core.Utilities.Security;
 namespace Business.DependencyResolver.Autofac
 {   
     public class AutofacBusinessModule:Module
@@ -23,8 +25,13 @@ namespace Business.DependencyResolver.Autofac
 
             builder.RegisterType<CategoryManager>().As<ICategoryService>().SingleInstance();
             builder.RegisterType<EfCategoryDal>().As<ICategoryDal>().SingleInstance();
-            
-            
+
+            builder.RegisterType<UserManager>().As<IUserService>();
+            builder.RegisterType<EfUserDal>().As<IUserDal>();
+
+            builder.RegisterType<AuthManager>().As<IAuthService>();
+            builder.RegisterType<JwtHelper>().As<ITokenHelper>();
+
             var assembly=System.Reflection.Assembly.GetExecutingAssembly();
 
 

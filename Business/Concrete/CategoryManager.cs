@@ -1,5 +1,8 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentVlidation;
+using Core.Aspects.Autofac.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DatAccess.Abstract;
 using Entities.Concrete;
@@ -18,9 +21,15 @@ namespace Business.Concrete
         {
             _categoryDal = categoryDal;
         }
-
+        [ValidationAspect(typeof(CategoryValidator))]
         public IResult Add(Category category)
         {
+            IResult result= BusinessRules.Run(checkIfCategoryNameExists(category.CategoryName));
+
+            if (result != null)
+            {
+                return result;
+            }
            _categoryDal.Add(category);
            return new SuccessResult(Messages.CategoryAdded);
         }
@@ -35,5 +44,27 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<Category>(_categoryDal.Get(c => c.CategoryID == categoryId));
         }
+        [ValidationAspect(typeof(CategoryValidator))]
+        public IResult Update(Category category)
+        {
+            IResult result=BusinessRules.Run(checkIfCategoryNameExists(category.CategoryName));
+            if(result != null)
+            {
+                return result;
+            }
+            _categoryDal.Update(category);
+            return new SuccessResult();
+        }
+
+        private IResult checkIfCategoryNameExists(string CategoryName)
+        {
+            var result = _categoryDal.GetAll(c=>c.CategoryName==CategoryName).Any();
+
+            if (result)
+            {
+                return new ErrorResult();
+            }
+            return new SuccessResult();
+        } 
     }
 }
