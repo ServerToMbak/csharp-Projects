@@ -2,6 +2,9 @@
 using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentVlidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Performance;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -23,8 +26,9 @@ namespace Business.Concrete
             _categoryService = categoryService; 
         }
 
-       [SecuredOperation("product.add,admin")]
-       // [ValidationAspect(typeof(ProductValidator))]
+        [SecuredOperation("product.add,admin")]
+        [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
              
@@ -42,7 +46,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductAdded);
         }
 
-
+        [CacheAspect]
         public IDataResult<List<Product>> getAll()
         {
             if (DateTime.Now.Hour == 18)
@@ -56,7 +60,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryID == id));
         }
-
+        [CacheAspect]
         public IDataResult<Product> GetById(int productid)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductID == productid));
@@ -76,6 +80,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProdutDetails());
         }
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
             IResult result = BusinessRules.Run(CheckIfCategoryLimitExceded());
@@ -117,7 +122,12 @@ namespace Business.Concrete
             }
             return new SuccessResult(); 
         }
-
+        //[TransactionScopeAspect]
+        //[PerformanceAspect(5)]
+        public IResult AddTransactionalTest(Product product)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
  
