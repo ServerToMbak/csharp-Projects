@@ -42,7 +42,7 @@ namespace Business.Concrete
         //select * from Categories where category = 3 
         public IDataResult<Category> GetById(int categoryId)
         {
-            return new SuccessDataResult<Category>(_categoryDal.Get(c => c.CategoryID == categoryId));
+            return new SuccessDataResult<Category>(_categoryDal.Get(c => c.CategoryId == categoryId));
         }
         [ValidationAspect(typeof(CategoryValidator))]
         public IResult Update(Category category)

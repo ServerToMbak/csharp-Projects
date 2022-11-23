@@ -26,14 +26,14 @@ namespace Business.Concrete
             _categoryService = categoryService; 
         }
 
-        [SecuredOperation("product.add,admin")]
+       // [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
              
            IResult result= BusinessRules.Run(
-                           CheckIfProductCountOfCategoryCorrect(product.CategoryID), 
+                           CheckIfProductCountOfCategoryCorrect(product.CategoryId), 
                            CheckIfCategoryLimitExceded());
 
                 if(result !=null)
@@ -58,12 +58,12 @@ namespace Business.Concrete
 
         public IDataResult<List<Product>> GetAllByCateoryId(int id)
         {
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryID == id));
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id));
         }
         [CacheAspect]
         public IDataResult<Product> GetById(int productid)
         {
-            return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductID == productid));
+            return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productid));
         }
 
         public IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max)
@@ -93,13 +93,13 @@ namespace Business.Concrete
         private IResult CheckIfProductCountOfCategoryCorrect(int CategoryId)
         {
             //Select Count(*) from products where CategoryId=1=Aşagıdaki kodda bu linq ile bu sqp scripti oluşturulur
-            var result = _productDal.GetAll(p => p.CategoryID == CategoryId).Count();
+            var result = _productDal.GetAll(p => p.CategoryId == CategoryId).Count();
             if (result >= 10)
             {
                 return new ErrorResult(Messages.ProductCountOfCategoryError);
             }
 
-            return new SuccessResult();
+            return new SuccessResult("problem yok");
         }
         private IResult CheckIfProductNameExists(string productName)
         {

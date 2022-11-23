@@ -21,10 +21,11 @@ namespace WebAPI.Controllers
     
         public IActionResult GetAll()
         {
+            Thread.Sleep(5000);
           var result=_productService.getAll();
             if (result.Success)
             {
-                return Ok(result.Data);
+                return Ok(result);
             }
             return BadRequest(result.Message);
         }
@@ -35,6 +36,16 @@ namespace WebAPI.Controllers
             if (result.Success)
             {
                 return Ok(result.Data);
+            }
+            return BadRequest(result);
+        }
+        [HttpGet("getbycategory")]
+        public IActionResult GetByCategory(int CategoryId)
+        {
+            var result = _productService.GetAllByCateoryId(CategoryId);
+            if (result.Success)
+            {
+                return Ok(result);
             }
             return BadRequest(result);
         }
