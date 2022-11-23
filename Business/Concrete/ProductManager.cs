@@ -33,7 +33,7 @@ namespace Business.Concrete
         {
              
            IResult result= BusinessRules.Run(
-                           CheckIfProductCountOfCategoryCorrect(product.CategoryId), 
+                           CheckIfProductCountOfCategoryCorrect(product.CategoryID), 
                            CheckIfCategoryLimitExceded());
 
                 if(result !=null)
@@ -58,7 +58,7 @@ namespace Business.Concrete
 
         public IDataResult<List<Product>> GetAllByCateoryId(int id)
         {
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id));
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryID == id));
         }
         [CacheAspect]
         public IDataResult<Product> GetById(int productid)
@@ -93,7 +93,7 @@ namespace Business.Concrete
         private IResult CheckIfProductCountOfCategoryCorrect(int CategoryId)
         {
             //Select Count(*) from products where CategoryId=1=Aşagıdaki kodda bu linq ile bu sqp scripti oluşturulur
-            var result = _productDal.GetAll(p => p.CategoryId == CategoryId).Count();
+            var result = _productDal.GetAll(p => p.CategoryID == CategoryId).Count();
             if (result >= 10)
             {
                 return new ErrorResult(Messages.ProductCountOfCategoryError);
