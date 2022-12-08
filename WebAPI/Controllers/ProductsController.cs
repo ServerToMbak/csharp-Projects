@@ -14,14 +14,14 @@ namespace WebAPI.Controllers
         //IoC Controller -->Inversıon of Control
         IProductService _productService;
        public ProductsController(IProductService productService)
-        {
+        { 
             _productService=productService;
         }
         [HttpGet("getall")]
     
         public IActionResult GetAll()
         {
-            Thread.Sleep(5000);
+            Thread.Sleep(1000);
           var result=_productService.getAll();
             if (result.Success)
             {
@@ -43,6 +43,16 @@ namespace WebAPI.Controllers
         public IActionResult GetByCategory(int CategoryId)
         {
             var result = _productService.GetAllByCateoryId(CategoryId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpGet("getProductDetail")]
+        public IActionResult getProductDetail()
+        {
+            var result = _productService.GetProdutDetails();
             if (result.Success)
             {
                 return Ok(result);
